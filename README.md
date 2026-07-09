@@ -1,55 +1,56 @@
-# IdeaRadar · 点子雷达
+# IdeaRadar
 
-> 每日自动采集多平台 AI 轻创业讨论，经去重、营销号过滤、LLM 可行性评分后，邮件推送高价值创业点子。
+> Daily AI-powered startup idea aggregator. Fetches from Reddit, Zhihu, and RSS — deduplicates, filters spam, scores with LLM, and pushes the best ideas via email.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![中文](https://img.shields.io/badge/中文-README-red)](README_zh.md)
 
 ---
 
-## 核心流程
+## Pipeline
 
 ```
-采集 (Reddit + 知乎 + RSS)
+Scrape (Reddit + Zhihu + RSS)
     ↓
-语义去重 (SimHash, 阈值 0.85)
+Semantic Dedup (SimHash, threshold 0.85)
     ↓
-营销号过滤 (关键词 + 内容特征)
+Spam Filter (keywords + content features)
     ↓
-LLM 可行性评分 (0-10, 五维度加权)
+LLM Feasibility Score (0-10, 5 dimensions weighted)
     ↓
-排序 → Top N → 邮件推送 (HTML)
+Sort → Top N → Email Push (HTML)
 ```
 
-## 数据源
+## Data Sources
 
-| 源 | 方式 | 认证 |
+| Source | Method | Auth |
 |---|---|---|
-| Reddit | `old.reddit.com` JSON API | 无需 |
-| 知乎 | 热榜 + 搜索 API | 无需 |
-| RSS | 任意 Atom/RSS feed | 无需 |
+| Reddit | `old.reddit.com` JSON API | None |
+| Zhihu (知乎) | Hot list + search API | None |
+| RSS | Any Atom/RSS feed | None |
 
-## 快速开始
+## Quick Start
 
-### 前置条件
+### Prerequisites
 
 - Python 3.10+
-- OpenAI 兼容 API Key（支持 DeepSeek / GLM-4 等）
-- SMTP 邮箱（用于邮件推送）
+- OpenAI-compatible API Key (works with DeepSeek, GLM-4, etc.)
+- SMTP email account
 
-### 安装与运行
+### Setup
 
 ```bash
-# 1. 进入项目目录
+# 1. Enter project directory
 cd idea-radar
 
-# 2. 安装依赖
+# 2. Install dependencies
 pip install -r requirements.txt
-# 或用 uv: uv sync
+# or with uv: uv sync
 
-# 3. 配置环境变量
+# 3. Configure environment
 cp .env.example .env
-# 编辑 .env 填入:
+# Edit .env with your keys:
 #   OPENAI_API_KEY=sk-xxx
 #   SMTP_HOST=smtp.gmail.com
 #   SMTP_PORT=587
@@ -58,7 +59,7 @@ cp .env.example .env
 #   EMAIL_FROM=your@gmail.com
 #   EMAIL_RECIPIENTS=user@example.com
 
-# 4. 运行
+# 4. Run
 python -m src.main --hours 24 --top-n 5
 ```
 
@@ -68,50 +69,50 @@ python -m src.main --hours 24 --top-n 5
 docker compose up --build
 ```
 
-### GitHub Actions（定时自动运行）
+### GitHub Actions (Scheduled)
 
-Fork 本仓库，在 Settings → Secrets 中添加上述环境变量，`daily-push.yml` 会自动在 UTC 0:00 / 8:00 / 16:00 执行。
+Fork this repo, add the environment variables in Settings → Secrets. The `daily-push.yml` workflow runs at UTC 00:00 / 08:00 / 16:00 automatically.
 
-## 项目结构
+## Project Structure
 
 ```
 idea-radar/
 ├── src/
-│   ├── main.py                   # CLI 入口
-│   ├── orchestrator.py           # 流程编排
-│   ├── models.py                 # 数据模型
-│   ├── scrapers/                 # 采集器
+│   ├── main.py                   # CLI entry point
+│   ├── orchestrator.py           # Pipeline orchestrator
+│   ├── models.py                 # Data models
+│   ├── scrapers/                 # Data source scrapers
 │   │   ├── reddit.py
 │   │   ├── rss.py
 │   │   └── zhihu.py
-│   ├── processors/               # 处理器
-│   │   ├── deduplicator.py       # SimHash 去重
-│   │   ├── spam_filter.py        # 营销号过滤
-│   │   └── scorer.py             # LLM 评分
+│   ├── processors/               # Data processors
+│   │   ├── deduplicator.py       # SimHash dedup
+│   │   ├── spam_filter.py        # Spam detection
+│   │   └── scorer.py             # LLM scoring
 │   └── notifiers/
-│       └── email_notifier.py     # 邮件推送
-├── data/config.json              # 用户配置
-├── config/spam_keywords.txt      # 关键词库
-├── prompts/scorer.txt            # LLM prompt
-├── templates/email.html          # 邮件模板
+│       └── email_notifier.py     # SMTP email
+├── data/config.json              # User config
+├── config/spam_keywords.txt      # Spam keyword list
+├── prompts/scorer.txt            # LLM prompt template
+├── templates/email.html          # Email HTML template
 ├── Dockerfile / docker-compose.yml
-└── docs/                         # 设计文档
+└── docs/                         # Design documents
     ├── 01-requirements.md
     ├── 02-technical-plan.md
     └── 03-skill.md
 ```
 
-## 技术栈
+## Tech Stack
 
-| 层 | 技术 |
+| Layer | Technology |
 |---|---|
-| 语言 | Python 3.10+ |
-| 采集 | httpx (异步) |
-| 去重 | SimHash + jieba |
-| 评分 | OpenAI 兼容 API |
-| 推送 | SMTP (HTML 邮件) |
-| 部署 | Docker / GitHub Actions |
+| Language | Python 3.10+ |
+| Scraping | httpx (async) |
+| Dedup | SimHash + jieba |
+| Scoring | OpenAI-compatible API |
+| Push | SMTP (HTML email) |
+| Deploy | Docker / GitHub Actions |
 
-## 许可证
+## License
 
 MIT
