@@ -1,0 +1,27 @@
+[project]
+name = "daily-idea-radar"
+version = "0.1.0"
+description = "AI 轻创业点子日报系统 — 每日多源采集、去重过滤、可行性评分、邮件推送"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.27.0",
+    "feedparser>=6.0.10",
+    "jieba>=0.42.1",
+    "openai>=1.0.0",
+    "lxml>=5.0.0",
+]
+
+[project.scripts]
+daily-idea-radar = "src.main:main"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

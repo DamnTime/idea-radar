@@ -1,0 +1,10 @@
+services:
+  daily-idea-radar:
+    build: .
+    container_name: daily-idea-radar
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    command: ["uv", "run", "python", "-m", "src.main", "--hours", "24", "--top-n", "5"]

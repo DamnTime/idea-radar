@@ -1,0 +1,40 @@
+name: Daily Idea Push
+
+on:
+  schedule:
+    - cron: "0 0,8,16 * * *"
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "采集时间窗口（小时）"
+        default: "24"
+        required: false
+      top_n:
+        description: "推送数量"
+        default: "5"
+        required: false
+
+jobs:
+  run-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync --no-dev
+
+      - name: Run daily idea radar
+        run: uv run python -m src.main --hours ${{ github.event.inputs.hours || 24 }} --top-n ${{ github.event.inputs.top_n || 5 }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}

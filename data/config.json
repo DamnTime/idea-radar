@@ -1,0 +1,93 @@
+{
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "api_key_env": "OPENAI_API_KEY"
+  },
+  "sources": {
+    "rss": {
+      "feeds": [
+        {
+          "name": "36Kr",
+          "url": "https://36kr.com/feed",
+          "enabled": true,
+          "category": "startup"
+        },
+        {
+          "name": "阮一峰网络日志",
+          "url": "https://www.ruanyifeng.com/blog/atom.xml",
+          "enabled": true,
+          "category": "tech"
+        },
+        {
+          "name": "Hacker News",
+          "url": "https://hnrss.org/frontpage",
+          "enabled": true,
+          "category": "startup"
+        }
+      ]
+    },
+    "reddit": {
+      "enabled": true,
+      "fetch_comments": 3,
+      "subreddits": [
+        {
+          "subreddit": "Entrepreneur",
+          "sort": "hot",
+          "fetch_limit": 15,
+          "min_score": 5,
+          "enabled": true
+        },
+        {
+          "subreddit": "SideProject",
+          "sort": "top",
+          "fetch_limit": 15,
+          "min_score": 5,
+          "enabled": true
+        },
+        {
+          "subreddit": "SaaS",
+          "sort": "hot",
+          "fetch_limit": 10,
+          "min_score": 5,
+          "enabled": true
+        },
+        {
+          "subreddit": "startups",
+          "sort": "hot",
+          "fetch_limit": 10,
+          "min_score": 10,
+          "enabled": true
+        }
+      ]
+    },
+    "zhihu": {
+      "enabled": true,
+      "fetch_hot": true,
+      "search_keywords": ["AI 创业", "轻创业", "副业", "独立开发", "SaaS"],
+      "fetch_limit": 30
+    }
+  },
+  "filtering": {
+    "spam_threshold": 0.7,
+    "dedup_threshold": 0.85,
+    "min_score": 5.0,
+    "max_items": 10,
+    "keyword_file": "config/spam_keywords.txt"
+  },
+  "notifier": {
+    "email": {
+      "enabled": true,
+      "smtp_host": "${SMTP_HOST}",
+      "smtp_port": "${SMTP_PORT}",
+      "smtp_user": "${SMTP_USER}",
+      "smtp_pass": "${SMTP_PASS}",
+      "from_addr": "${EMAIL_FROM}",
+      "to_addrs": "${EMAIL_RECIPIENTS}"
+    }
+  },
+  "schedule": {
+    "cron": "0 0,8,16 * * *",
+    "timezone": "Asia/Shanghai"
+  }
+}
