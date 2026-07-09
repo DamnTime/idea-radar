@@ -32,8 +32,9 @@ class RSSScraper(BaseScraper):
         items: list[ContentItem] = []
 
         for entry in parsed.entries:
-            published = self._parse_date(entry)
-            if published and published < since:
+            published = self._make_naive(self._parse_date(entry))
+            since_naive = self._make_naive(since)
+            if published and since_naive and published < since_naive:
                 continue
 
             content = (
@@ -70,3 +71,9 @@ class RSSScraper(BaseScraper):
                 except Exception:
                     pass
         return None
+
+    @staticmethod
+    def _make_naive(dt: datetime | None) -> datetime | None:
+        if dt is not None and dt.tzinfo is not None:
+            return dt.replace(tzinfo=None)
+        return dt
