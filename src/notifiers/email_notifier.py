@@ -54,8 +54,12 @@ class EmailNotifier(BaseNotifier):
             return False
 
     def _send_sync(self, msg: MIMEMultipart):
-        with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
+        if self.smtp_port == 465:
+            server = smtplib.SMTP_SSL(self.smtp_host, self.smtp_port, timeout=30)
+        else:
+            server = smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30)
             server.starttls()
+        with server:
             server.login(self.smtp_user, self.smtp_pass)
             server.sendmail(self.from_addr, self.to_addrs, msg.as_string())
 
