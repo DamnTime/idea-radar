@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -23,7 +24,11 @@ class Orchestrator:
         self.spam_filter = SpamFilter(config.get("filtering", {}))
         self.scorer = Scorer(config.get("ai", {}))
         self.notifier = EmailNotifier(config.get("notifier", {}).get("email", {}))
-        self.http_client = httpx.AsyncClient(timeout=30)
+        proxy_url = os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
+        client_kwargs = {"timeout": 30}
+        if proxy_url:
+            client_kwargs["proxy"] = proxy_url
+        self.http_client = httpx.AsyncClient(**client_kwargs)
 
     def _init_scrapers(self):
         sources = self.config.get("sources", {})

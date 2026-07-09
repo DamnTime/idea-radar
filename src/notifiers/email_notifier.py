@@ -16,7 +16,11 @@ class EmailNotifier(BaseNotifier):
         self.smtp_port = config.get("smtp_port", int(os.getenv("SMTP_PORT", "587")))
         self.smtp_user = config.get("smtp_user", os.getenv("SMTP_USER", ""))
         self.smtp_pass = config.get("smtp_pass", os.getenv("SMTP_PASS", ""))
-        self.from_addr = config.get("from_addr", os.getenv("EMAIL_FROM", ""))
+        raw_from = config.get("from_addr", os.getenv("EMAIL_FROM", ""))
+        if raw_from and "${" not in raw_from:
+            self.from_addr = raw_from
+        else:
+            self.from_addr = self.smtp_user
         recipients_raw = config.get("to_addrs", os.getenv("EMAIL_RECIPIENTS", ""))
         self.to_addrs = [r.strip() for r in recipients_raw.split(",") if r.strip()]
         self._custom_template = self._load_template()
