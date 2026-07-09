@@ -4,6 +4,12 @@ import json
 import os
 from pathlib import Path
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from src.orchestrator import Orchestrator
 
 
